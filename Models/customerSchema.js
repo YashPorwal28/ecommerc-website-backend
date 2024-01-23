@@ -29,6 +29,11 @@ const customerSchema = new mongoose.Schema(
       required: true,
       validate: [validator.isMobilePhone, "Invalid Phone Number"],
     },
+    role : {
+      type : String,
+      enum : ['customer'],
+      default : "customer"
+    },
     // An array of references to the customer's orders.
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
   },

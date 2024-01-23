@@ -59,6 +59,7 @@ const sellerSignin = router.post('/seller-signin', async (req,res)=>{
         {
           userId : existingSeller.id,
           username : existingSeller.username,
+          role : existingSeller.role
         },jwtSecret
       )
            // set token as a cookie in response

@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-
-
     name: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
@@ -14,7 +12,16 @@ const productSchema = new mongoose.Schema(
       size: { type: String },
       material: { type: String },
     },
-    seller : {type : mongoose.Schema.Types.ObjectId ,ref :"Seller" },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: "Seller" },
+    images: [
+      {
+        url: { type: String, required: true },
+        public_id: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     reviews: [
       {
         user: {

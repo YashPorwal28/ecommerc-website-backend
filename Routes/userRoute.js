@@ -66,6 +66,7 @@ const signin = router.post("/signin", async (req, res) => {
       {
         userId: existingUser.id,
         username: existingUser.username,
+        role : existingUser.role
       },
       jwtSecret
     );
