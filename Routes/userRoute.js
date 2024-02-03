@@ -1,15 +1,15 @@
 const express = require("express");
+const { query, validationResult } = require('express-validator');
 const router = express.Router();
 require("dotenv").config();
-const customerSchema = require("../Models/customerSchema");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const jwtSecret = process.env.JWT_SECRET;
-const {signup , signin} = require('../Controller/User') 
+const {signup , signin, deleteAccount} = require('../Controller/User'); 
+const { CustomerSignupValidator } = require("../Validator");
 
 
-router.post("/signup", signup );
+router.post("/signup", CustomerSignupValidator ,signup);
 
- router.post("/signin", signin);
+router.post("/signin", signin);
+router.delete('/delacc/:id', deleteAccount)
+
 
 module.exports = router;

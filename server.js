@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { databaseConnection } = require("./utils/connection");
 const userRoute = require('./Routes/userRoute')
+const adminRoute = require('./Routes/adminRoute')
 const cookieParser = require("cookie-parser");
 
 const productRoutes = require('./Routes/producetCrudRoute')
@@ -21,6 +22,7 @@ app.use(fileUpload({
 app.use("/api", userRoute);
 app.use("/api", sellerRoute);
 app.use("/api", productRoutes);
+app.use("/api", adminRoute)
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

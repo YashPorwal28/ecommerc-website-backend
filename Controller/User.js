@@ -1,11 +1,20 @@
 require("dotenv").config();
-const customerSchema = require("../Models/customerSchema");
+const { query, validationResult } = require('express-validator');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Customer = require("../Models/customerSchema");
 const jwtSecret = process.env.JWT_SECRET;
 
 exports.signup = async(req,res)=>{
     try {
+      
+      const result = validationResult(req);
+      console.log(result.array()[0].msg);
+
+        if (!result.isEmpty()) {
+          return res.status(400).json({errors: result.array()})
+        }
+
         const {
           username,
           firstname,
@@ -17,7 +26,15 @@ exports.signup = async(req,res)=>{
           phoneNo,
         } = req.body;
     
-        const newCustomer = new customerSchema({
+        // Check if user already exists in the database
+
+        const userExists = await Customer.findOne({email})
+        if(userExists) return res.status(403).json({error : "Email is taken"})
+
+        const userNameExists = await Customer.findOne({username})
+        if(userNameExists) return res.status(403).json({error : "Username Already exists"})
+
+        const newCustomer = new Customer({
           username,
           firstname,
           middlename,
@@ -28,7 +45,7 @@ exports.signup = async(req,res)=>{
           phoneNo,
         });
     
-        console.log(newCustomer);
+        // console.log(newCustomer);
     
         const savedCustomer = await newCustomer.save();
     
@@ -46,7 +63,7 @@ exports.signin = async (req,res)=>{
     try {
         const { username, password } = req.body;
     
-        const existingUser = await customerSchema.findOne({ username });
+        const existingUser = await Customer.findOne({ username });
         // check whether customer exists or not
         if (!existingUser) {
           res.status(401).json({ error: "Invalid credentials" });
@@ -85,3 +102,26 @@ exports.signin = async (req,res)=>{
       }
 
 }
+
+
+// if user want to delete it's account 
+
+exports.deleteAccount = async(req,res)=>{
+
+    try {
+        const id = req.params.id;
+        const user = await Customer.findById(id)
+        if(!user){
+            return  res.status(400).json({error:"Internal Error"})
+        }
+
+        await user.deleteOne();
+
+        res.status(200).json("user Deleted");
+
+    } catch (error) {
+        res.status(400).json(error.message)
+    }
+
+}
+
